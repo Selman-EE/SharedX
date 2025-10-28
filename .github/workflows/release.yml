@@ -7,9 +7,18 @@ on:
         description: 'Version number (e.g., 1.0.0)'
         required: true
         type: string
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+permissions:
+  contents: write
+  packages: write
 
 jobs:
   release:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
     
     steps:
@@ -25,43 +34,63 @@ jobs:
           6.0.x
           8.0.x
     
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.10.2
+      with:
+        versionSpec: '5.x'
+    
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.10.2
+      with:
+        useConfigFile: true
+    
+    - name: Set Version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${{ steps.gitversion.outputs.nuGetVersionV2 }}" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Display Version
+      run: echo "Building version ${{ steps.version.outputs.version }}"
+    
     - name: Restore dependencies
       run: dotnet restore
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore /p:Version=${{ github.event.inputs.version }}
+      run: dotnet build --configuration Release --no-restore /p:Version=${{ steps.version.outputs.version }}
     
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal
     
-    - name: Pack SharedX.Core
-      run: dotnet pack src/SharedX.Core/SharedX.Core.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ github.event.inputs.version }}
-    
-    - name: Pack SharedX.Extensions
-      run: dotnet pack src/SharedX.Extensions/SharedX.Extensions.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ github.event.inputs.version }}
-    
-    - name: Pack SharedX.Abstractions
-      run: dotnet pack src/SharedX.Abstractions/SharedX.Abstractions.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ github.event.inputs.version }}
+    - name: Pack All Packages
+      run: |
+        dotnet pack src/SharedX.Core/SharedX.Core.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
+        dotnet pack src/SharedX.Extensions/SharedX.Extensions.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
+        dotnet pack src/SharedX.Abstractions/SharedX.Abstractions.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
+        echo "Packages created:"
+        ls -la ./artifacts/
     
     - name: Push to NuGet.org
-      run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run: |
+        for package in ./artifacts/*.nupkg; do
+          echo "Pushing $package"
+          dotnet nuget push "$package" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate || echo "Failed to push $package"
+        done
     
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: v${{ github.event.inputs.version }}
-        name: Release v${{ github.event.inputs.version }}
+        tag_name: v${{ steps.version.outputs.version }}
+        name: Release v${{ steps.version.outputs.version }}
         body: |
-          ## NuGet Packages Published
-          
-          - SharedX.Core v${{ github.event.inputs.version }}
-          - SharedX.Extensions v${{ github.event.inputs.version }}
-          - SharedX.Abstractions v${{ github.event.inputs.version }}
-          
-          Install via:
-```bash
-          dotnet add package SharedX.Core --version ${{ github.event.inputs.version }}
-```
+          NuGet Packages Published
+          - SharedX.Core v${{ steps.version.outputs.version }}
+          - SharedX.Extensions v${{ steps.version.outputs.version }}
+          - SharedX.Abstractions v${{ steps.version.outputs.version }}
         draft: false
         prerelease: false
       env:
