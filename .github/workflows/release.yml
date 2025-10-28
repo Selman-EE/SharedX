@@ -65,17 +65,20 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal
     
-    - name: Pack SharedX.Core
-      run: dotnet pack src/SharedX.Core/SharedX.Core.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
-    
-    - name: Pack SharedX.Extensions
-      run: dotnet pack src/SharedX.Extensions/SharedX.Extensions.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
-    
-    - name: Pack SharedX.Abstractions
-      run: dotnet pack src/SharedX.Abstractions/SharedX.Abstractions.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
+    - name: Pack All Packages
+      run: |
+        dotnet pack src/SharedX.Core/SharedX.Core.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
+        dotnet pack src/SharedX.Extensions/SharedX.Extensions.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
+        dotnet pack src/SharedX.Abstractions/SharedX.Abstractions.csproj --configuration Release --no-build --output ./artifacts /p:PackageVersion=${{ steps.version.outputs.version }}
+        echo "Packages created:"
+        ls -la ./artifacts/
     
     - name: Push to NuGet.org
-      run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run: |
+        for package in ./artifacts/*.nupkg; do
+          echo "Pushing $package"
+          dotnet nuget push "$package" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate || echo "Failed to push $package"
+        done
     
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
