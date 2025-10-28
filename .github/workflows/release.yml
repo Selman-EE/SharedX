@@ -11,11 +11,10 @@ on:
     types: [closed]
     branches:
       - master
-
 permissions:
   contents: write
   packages: write
-
+  
 jobs:
   release:
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true)
@@ -86,11 +85,7 @@ jobs:
       with:
         tag_name: v${{ steps.version.outputs.version }}
         name: Release v${{ steps.version.outputs.version }}
-        body: |
-          NuGet Packages Published
-          - SharedX.Core v${{ steps.version.outputs.version }}
-          - SharedX.Extensions v${{ steps.version.outputs.version }}
-          - SharedX.Abstractions v${{ steps.version.outputs.version }}
+        body: "NuGet Packages Published: SharedX.Core v${{ steps.version.outputs.version }}, SharedX.Extensions v${{ steps.version.outputs.version }}, SharedX.Abstractions v${{ steps.version.outputs.version }}"
         draft: false
         prerelease: false
       env:
