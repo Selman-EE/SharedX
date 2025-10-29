@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <PackageId>SharedX.Abstractions</PackageId>
     <Description>Abstractions for caching, messaging, persistence, and tracing in SharedX microservices</Description>
     <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTelemetry" Version="1.13.1" />
+    <PackageReference Include="OpenTelemetry" />
     <ProjectReference Include="..\SharedX.Core\SharedX.Core.csproj" />
   </ItemGroup>
 </Project>

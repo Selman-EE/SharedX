@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <PackageId>SharedX.Extensions</PackageId>
     <Description>Extension methods for common .NET types (String, DateTime, Collections, etc.)</Description>
     <Version>1.0.0</Version>
