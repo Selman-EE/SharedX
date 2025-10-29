@@ -1,9 +1,7 @@
-
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Order;
-using System;
 using System.Globalization;
 using System.Text;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Order;
 
 namespace SharedX.Benchmarks.Extensions;
 
@@ -15,46 +13,46 @@ public class StringSearchBenchmarks
     private const string PolishText = "Łódź Kraków Gdańsk Wrocław Poznań";
     private const string MixedText = "Product: Łódź Wooden Chair #42 - 50% OFF!";
     private const string EnglishText = "London Berlin Paris Rome Madrid";
-        
+
     [Benchmark(Baseline = true)]
     public string Baseline_ToLower_Polish()
     {
         // What developers typically do (WRONG for search)
         return PolishText.ToLowerInvariant();
     }
-        
+
     [Benchmark]
     public string Naive_RemoveDiacritics_Polish()
     {
         // Naive implementation - creates many string objects
         return RemoveDiacriticsNaive(PolishText).ToLowerInvariant();
     }
-        
+
     [Benchmark]
     public string Optimized_ToSearchable_Polish()
     {
         // Our optimized implementation (to be implemented)
         return ToSearchableOptimized(PolishText);
     }
-        
+
     [Benchmark]
     public string Baseline_ToLower_Mixed()
     {
         return MixedText.ToLowerInvariant();
     }
-        
+
     [Benchmark]
     public string Optimized_ToSearchable_Mixed()
     {
         return ToSearchableOptimized(MixedText);
     }
-        
+
     [Benchmark]
     public string Baseline_ToLower_English()
     {
         return EnglishText.ToLowerInvariant();
     }
-        
+
     [Benchmark]
     public string Optimized_ToSearchable_English()
     {
@@ -70,10 +68,7 @@ public class StringSearchBenchmarks
         foreach (var c in normalizedString)
         {
             var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
-            if (unicodeCategory != UnicodeCategory.NonSpacingMark)
-            {
-                stringBuilder.Append(c);
-            }
+            if (unicodeCategory != UnicodeCategory.NonSpacingMark) stringBuilder.Append(c);
         }
 
         return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
@@ -100,6 +95,7 @@ public class StringSearchBenchmarks
                     buffer[length++] = ' ';
                     lastWasSpace = true;
                 }
+
                 continue;
             }
 
@@ -111,6 +107,7 @@ public class StringSearchBenchmarks
                     buffer[length++] = ' ';
                     lastWasSpace = true;
                 }
+
                 continue;
             }
 
@@ -141,7 +138,7 @@ public class StringSearchBenchmarks
             'ó' => 'o',
             'ś' => 's',
             'ź' or 'ż' => 'z',
-                
+
             // Polish uppercase (shouldn't hit after ToLower, but just in case)
             'Ą' => 'a',
             'Ć' => 'c',
@@ -151,7 +148,7 @@ public class StringSearchBenchmarks
             'Ó' => 'o',
             'Ś' => 's',
             'Ź' or 'Ż' => 'z',
-                
+
             // Common European diacritics (for completeness)
             'à' or 'á' or 'â' or 'ã' or 'ä' or 'å' => 'a',
             'è' or 'é' or 'ê' or 'ë' => 'e',
@@ -161,7 +158,7 @@ public class StringSearchBenchmarks
             'ý' or 'ÿ' => 'y',
             'ñ' => 'n',
             'ç' => 'c',
-                
+
             _ => c
         };
     }

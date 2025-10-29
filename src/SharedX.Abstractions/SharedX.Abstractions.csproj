@@ -1,13 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
-    <PackageId>SharedX.Abstractions</PackageId>
-    <Description>Abstractions for caching, messaging, persistence, and tracing in SharedX microservices</Description>
-    <Version>1.0.0</Version>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <!-- ✅ Enable AOT compatibility -->
+        <IsAotCompatible>true</IsAotCompatible>
+        <PackageId>SharedX.Abstractions</PackageId>
+        <Description>Abstractions for caching, messaging, persistence, and tracing in SharedX microservices</Description>
+        <Version>1.0.0</Version>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="OpenTelemetry" />
-    <ProjectReference Include="..\SharedX.Core\SharedX.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="OpenTelemetry"/>
+        <ProjectReference Include="..\SharedX.Core\SharedX.Core.csproj"/>
+    </ItemGroup>
 </Project>

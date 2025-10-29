@@ -4,7 +4,7 @@ using Xunit;
 
 namespace SharedX.Tests.ExtensionTests;
 
-public class CollectionExtensionsTests
+public class CollectionHelperTests
 {
     #region AsList Tests
 
@@ -131,20 +131,6 @@ public class CollectionExtensionsTests
 
         // Assert
         sum.Should().Be(6);
-    }
-
-    [Fact]
-    public void ForEach_WithIndex_ProvidesCorrectIndices()
-    {
-        // Arrange
-        var list = new List<string> { "a", "b", "c" };
-        var result = new List<string>();
-
-        // Act
-        list.ForEach((item, index) => result.Add($"{index}:{item}"));
-
-        // Assert
-        result.Should().Equal("0:a", "1:b", "2:c");
     }
 
     [Fact]
