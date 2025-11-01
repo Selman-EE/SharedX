@@ -1,13 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
-    <PackageId>SharedX.Core</PackageId>
-    <Description>Core utilities, models, constants, and exceptions for SharedX microservices</Description>
-    <Version>1.0.0</Version>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <!-- ✅ Enable AOT compatibility -->
+        <IsAotCompatible>true</IsAotCompatible>
+        <PackageId>SharedX.Core</PackageId>
+        <Description>Core utilities, models, constants, and exceptions for SharedX microservices</Description>
+        <Version>1.0.0</Version>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="4.3.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Serilog"/>
+        <PackageReference Include="Serilog.Extensions.Logging"/>
+    </ItemGroup>
 </Project>

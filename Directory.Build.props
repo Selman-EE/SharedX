@@ -1,30 +1,29 @@
 <Project>
-  <PropertyGroup>
-    <!-- Common properties for all projects -->
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors>
-    
-    <!-- Package metadata -->
-    <Authors>Selman Ekici</Authors>
-    <Company>SharedX</Company>
-    <Copyright>Copyright © 2025 Selman Ekici</Copyright>
-    <PackageProjectUrl>https://github.com/Selman-EE/SharedX</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Selman-EE/SharedX.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>microservices;shared;utilities;dotnet;netstandard</PackageTags>
-    
-    <!-- Symbols -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    
-    <!-- Deterministic builds -->
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
+    <PropertyGroup>
+        <!-- Common properties for all projects -->
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+
+        <!-- Package metadata -->
+        <Authors>Selman Ekici</Authors>
+        <Company>SharedX</Company>
+        <Copyright>Copyright © 2025 Selman Ekici</Copyright>
+        <PackageProjectUrl>https://github.com/Selman-EE/SharedX</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Selman-EE/SharedX.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>microservices;shared;utilities;dotnet;netstandard;net8</PackageTags>
+
+        <!-- Symbols -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+        <!-- Deterministic builds -->
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+        <Deterministic>true</Deterministic>
+    </PropertyGroup>
 </Project>
