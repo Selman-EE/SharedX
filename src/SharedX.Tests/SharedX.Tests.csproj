@@ -27,4 +27,8 @@
         <ProjectReference Include="..\SharedX.Extensions\SharedX.Extensions.csproj"/>
         <ProjectReference Include="..\SharedX.Abstractions\SharedX.Abstractions.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ExtensionTests\" />
+    </ItemGroup>
 </Project>
