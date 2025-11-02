@@ -1,20 +1,20 @@
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using Serilog.Exceptions;
+using Serilog.Formatting.Compact;
 using Serilog.Sinks.GrafanaLoki;
 
-namespace SharedX.Abstraction.Logging;
-
+namespace SharedX.Abstractions.Logging;
 public static class SerilogExtensions
 {
-    public static IHostBuilder AddSerilogLogging(
-        this IHostBuilder hostBuilder,
-        string serviceName)
+    public static IHostBuilder AddSerilogLogging(this IHostBuilder hostBuilder, string serviceName)
     {
         hostBuilder.UseSerilog((context, configuration) =>
         {
             var lokiUrl = context.Configuration["Serilog:LokiUrl"];
-            var lokiApiKey = context.Configuration["Serilog:LokiApiKey"];
+            ArgumentException.ThrowIfNullOrWhiteSpace(lokiUrl);
+            var lokiApiKey = context.Configuration["Serilog:LokiApiKey"]; // if you use auth
             var environment = context.HostingEnvironment.EnvironmentName;
 
             configuration
@@ -27,26 +27,35 @@ public static class SerilogExtensions
                 .Enrich.WithProperty("Environment", environment)
                 .Enrich.WithMachineName()
                 .Enrich.WithThreadId()
-                .WriteTo.Console(
-                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}")
-                .WriteTo.File(
-                    $"logs/{serviceName}-.log",
+                .Enrich.WithExceptionDetails() // Serilog.Exceptions
+                .WriteTo.Console(new CompactJsonFormatter())
+                .WriteTo.File(new CompactJsonFormatter(),
+                    $"logs/{serviceName}-.json",
                     rollingInterval: RollingInterval.Day,
-                    retainedFileCountLimit: 7,
-                    outputTemplate:
-                    "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}");
+                    retainedFileCountLimit: 13)
+                .Filter.ByExcluding(le =>
+                {
+                    if (le.Properties.TryGetValue("RequestPath", out var v) &&
+                        v is ScalarValue sv && sv.Value is string p)
+                    {
+                        return p.StartsWith("/health", StringComparison.OrdinalIgnoreCase)
+                               || p.StartsWith("/metrics", StringComparison.OrdinalIgnoreCase);
+                    }
 
-            // Add Grafana Loki if configured
-            if (string.IsNullOrWhiteSpace(lokiUrl)) return;
-            var lokiLabels = new Dictionary<string, string>
+                    return false;
+                });
+
+
+            var labels = new Dictionary<string, string>
             {
-                { "app", serviceName },
-                { "environment", environment }
+                ["app"] = serviceName,
+                ["environment"] = environment
             };
 
             configuration.WriteTo.GrafanaLoki(
                 lokiUrl,
-                labels: new Dictionary<string, string>(lokiLabels));
+                labels: labels,
+                period: TimeSpan.FromSeconds(3));
         });
 
         return hostBuilder;
