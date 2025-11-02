@@ -16,8 +16,11 @@
         <PackageReference Include="OpenTelemetry" />
         <PackageReference Include="Serilog" />
         <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Enrichers.Activity" />
         <PackageReference Include="Serilog.Enrichers.Environment" />
         <PackageReference Include="Serilog.Enrichers.Thread" />
+        <PackageReference Include="Serilog.Exceptions" />
+        <PackageReference Include="Serilog.Formatting.Compact" />
         <PackageReference Include="Serilog.Settings.Configuration" />
         <PackageReference Include="Serilog.Sinks.Console" />
         <PackageReference Include="Serilog.Sinks.File" />
