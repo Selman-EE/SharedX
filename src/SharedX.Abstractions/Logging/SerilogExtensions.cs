@@ -31,10 +31,6 @@ public static class SerilogExtensions
                 .Enrich.WithThreadId()
                 .Enrich.WithExceptionDetails() // Serilog.Exceptions
                 .WriteTo.Console(new CompactJsonFormatter())
-                .WriteTo.File(new CompactJsonFormatter(),
-                    $"logs/{serviceName}-.json",
-                    rollingInterval: RollingInterval.Day,
-                    retainedFileCountLimit: 13)
                 .Filter.ByExcluding(le =>
                 {
                     if (le.Properties.TryGetValue("RequestPath", out var v) &&
@@ -47,6 +43,17 @@ public static class SerilogExtensions
                     return false;
                 });
 
+            var isLocal = context.HostingEnvironment.IsDevelopment();
+            if (isLocal || environment.Equals("development", StringComparison.OrdinalIgnoreCase))
+            {
+                // LOCAL: file only (no console, no Loki)
+                configuration.WriteTo.File(new CompactJsonFormatter(),
+                    $"logs/{serviceName}-.json",
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 7);
+
+                return;
+            }
 
             var labels = new Dictionary<string, string>
             {
