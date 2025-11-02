@@ -13,7 +13,15 @@
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-        <PackageReference Include="OpenTelemetry"/>
-        <ProjectReference Include="..\SharedX.Core\SharedX.Core.csproj"/>
+        <PackageReference Include="OpenTelemetry" />
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Enrichers.Environment" />
+        <PackageReference Include="Serilog.Enrichers.Thread" />
+        <PackageReference Include="Serilog.Settings.Configuration" />
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="Serilog.Sinks.File" />
+        <PackageReference Include="Serilog.Sinks.GrafanaLoki" />
+        <ProjectReference Include="..\SharedX.Core\SharedX.Core.csproj" />
     </ItemGroup>
 </Project>
