@@ -13,10 +13,6 @@ public static class SerilogExtensions
     {
         hostBuilder.UseSerilog((context, configuration) =>
         {
-            var lokiUrl = context.Configuration["Serilog:LokiUrl"];
-            ArgumentException.ThrowIfNullOrWhiteSpace(lokiUrl);
-            var lokiApiKey = context.Configuration["Serilog:LokiApiKey"]; // if you use auth
-            ArgumentException.ThrowIfNullOrWhiteSpace(lokiApiKey);
             var environment = context.HostingEnvironment.EnvironmentName;
 
             configuration
@@ -55,6 +51,10 @@ public static class SerilogExtensions
                 return;
             }
 
+            var lokiUrl = context.Configuration["Serilog:LokiUrl"];
+            ArgumentException.ThrowIfNullOrWhiteSpace(lokiUrl);
+            var lokiApiKey = context.Configuration["Serilog:LokiApiKey"]; // if you use auth
+            ArgumentException.ThrowIfNullOrWhiteSpace(lokiApiKey);
             var labels = new Dictionary<string, string>
             {
                 ["app"] = serviceName,
