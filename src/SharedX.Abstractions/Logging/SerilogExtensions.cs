@@ -6,6 +6,7 @@ using Serilog.Formatting.Compact;
 using Serilog.Sinks.GrafanaLoki;
 
 namespace SharedX.Abstractions.Logging;
+
 public static class SerilogExtensions
 {
     public static IHostBuilder AddSerilogLogging(this IHostBuilder hostBuilder, string serviceName)
@@ -15,6 +16,7 @@ public static class SerilogExtensions
             var lokiUrl = context.Configuration["Serilog:LokiUrl"];
             ArgumentException.ThrowIfNullOrWhiteSpace(lokiUrl);
             var lokiApiKey = context.Configuration["Serilog:LokiApiKey"]; // if you use auth
+            ArgumentException.ThrowIfNullOrWhiteSpace(lokiApiKey);
             var environment = context.HostingEnvironment.EnvironmentName;
 
             configuration
@@ -52,10 +54,14 @@ public static class SerilogExtensions
                 ["environment"] = environment
             };
 
+            var parts = lokiApiKey.Split(':', 2);
             configuration.WriteTo.GrafanaLoki(
                 lokiUrl,
-                labels: labels,
-                period: TimeSpan.FromSeconds(3));
+                credentials: new GrafanaLokiCredentials { User = parts[0], Password = parts[1] },
+                labels:
+                labels,
+                period:
+                TimeSpan.FromSeconds(3));
         });
 
         return hostBuilder;
