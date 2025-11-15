@@ -41,6 +41,7 @@ public static class SerilogExtensions
                     return false;
                 });
 
+            // TODO: Below configs are not working
             // Instead of GrafanaLoki sink, use HTTP sink with Loki format
             if (!context.HostingEnvironment.IsDevelopment())
             {
