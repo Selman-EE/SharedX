@@ -72,14 +72,14 @@ public static class SerilogExtensions
 
 public class LokiHttpClient : IHttpClient
 {
-    private static readonly HttpClient _sharedHttpClient = new();
+    private static readonly HttpClient SharedHttpClient = new();
 
     public void SetCredentials(GrafanaLokiCredentials grafanaLokiCredentials)
     {
         // Set Basic Auth header and ASCII is the standard for HTTP Basic Auth!
         var authBytes = Encoding.ASCII.GetBytes($"{grafanaLokiCredentials.User}:{grafanaLokiCredentials.Password}");
         var authHeader = Convert.ToBase64String(authBytes);
-        _sharedHttpClient.DefaultRequestHeaders.Authorization =
+        SharedHttpClient.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authHeader);
     }
 
@@ -89,7 +89,7 @@ public class LokiHttpClient : IHttpClient
         using var content = new StreamContent(contentStream);
         content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
-        return await _sharedHttpClient.PostAsync(requestUri, content);
+        return await SharedHttpClient.PostAsync(requestUri, content);
     }
 
     public bool DebugMode { get; set; } = false;

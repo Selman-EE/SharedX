@@ -27,4 +27,9 @@
         <PackageReference Include="Serilog.Sinks.GrafanaLoki" />
         <ProjectReference Include="..\SharedX.Core\SharedX.Core.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="AwsS3\" />
+      <Folder Include="FusionCache\" />
+    </ItemGroup>
 </Project>
