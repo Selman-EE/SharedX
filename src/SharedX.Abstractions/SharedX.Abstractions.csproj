@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <!-- ✅ Enable AOT compatibility -->
-        <IsAotCompatible>true</IsAotCompatible>
+<!--        <IsAotCompatible>true</IsAotCompatible>-->
         <PackageId>SharedX.Abstractions</PackageId>
         <Description>Abstractions for caching, messaging, persistence, and tracing in SharedX microservices</Description>
         <Version>1.0.0</Version>
@@ -11,6 +11,7 @@
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
         <PackageReference Include="OpenTelemetry" />
@@ -25,11 +26,12 @@
         <PackageReference Include="Serilog.Sinks.Console" />
         <PackageReference Include="Serilog.Sinks.File" />
         <PackageReference Include="Serilog.Sinks.GrafanaLoki" />
+        <PackageReference Include="ZiggyCreatures.FusionCache" />
+        <PackageReference Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" />
         <ProjectReference Include="..\SharedX.Core\SharedX.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="AwsS3\" />
-      <Folder Include="FusionCache\" />
     </ItemGroup>
 </Project>
